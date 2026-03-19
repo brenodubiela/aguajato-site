@@ -90,88 +90,156 @@
             </div>
         </section>
 
+        <!-- Selo PSA em Destaque -->
+        <section class="section-sm" style="background:#0f172a; color:#fff; padding: 4rem 0;">
+            <div class="container">
+                <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 3rem; justify-content: center; background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0)); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius); padding: 3rem; box-shadow: 0 20px 40px rgba(0,0,0,0.2);">
+                    <img src="img/alteração-selo.webp" alt="Selo Qualidade PSA" style="max-width: 280px; height: auto; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5)); transform: scale(1.05);">
+                    <div style="flex: 1; min-width: 300px;">
+                        <span style="display:inline-block; padding:0.25rem 0.75rem; background:var(--brand); color:#fff; border-radius:2rem; font-size:0.85rem; font-weight:700; margin-bottom:1rem; text-transform:uppercase; letter-spacing:1px;">Certificação Exclusiva</span>
+                        <h2 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem; color: #fff; line-height: 1.2;">Selo de Qualidade PSA</h2>
+                        <p style="font-size: 1.15rem; color: #cbd5e1; line-height: 1.6; margin-bottom: 1rem;">
+                            A Aguajato tem o orgulho de ser a <strong>primeira e única empresa do Brasil</strong> a obter a rigorosa certificação PSA (Plano de Segurança da Água) – NBR ISO 14024.
+                        </p>
+                        <p style="font-size: 1.05rem; color: #94a3b8; line-height: 1.6;">
+                            Isso significa que todo o nosso processo é auditado e rastreado do início ao fim por uma empresa independente, entregando a mais alta excelência e segurança hídrica que você e seu projeto merecem.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Certificações -->
         <section class="section-sm" style="background:#fff; border-bottom:1px solid var(--slate-200);">
             <div class="container">
                 <div class="grid-3">
                     <div class="card" style="border-left:4px solid var(--brand); padding:1.5rem;">
-                        <strong style="font-size:.85rem; color:var(--slate-900); display:block; margin-bottom:.3rem;">🧪
-                            Portaria GM/MS 888/2021</strong>
-                        <p style="font-size:.8rem; color:var(--slate-500);">Todos os parâmetros físico-químicos e
-                            bacteriológicos seguem a legislação federal de potabilidade.</p>
+                        <strong style="font-size:.85rem; color:var(--slate-900); display:block; margin-bottom:.3rem;">🧪 Portaria GM/MS 888/2021</strong>
+                        <p style="font-size:.8rem; color:var(--slate-500);">Todos os parâmetros físico-químicos e bacteriológicos seguem a legislação federal de potabilidade.</p>
                     </div>
                     <div class="card" style="border-left:4px solid var(--green); padding:1.5rem;">
-                        <strong style="font-size:.85rem; color:var(--slate-900); display:block; margin-bottom:.3rem;">🏭
-                            CETESB</strong>
-                        <p style="font-size:.8rem; color:var(--slate-500);">Operação autorizada pela Companhia Ambiental
-                            do Estado de São Paulo. Licença sempre em dia.</p>
+                        <strong style="font-size:.85rem; color:var(--slate-900); display:block; margin-bottom:.3rem;">🏭 CETESB</strong>
+                        <p style="font-size:.8rem; color:var(--slate-500);">Operação autorizada pela Companhia Ambiental do Estado de São Paulo. Licença sempre em dia.</p>
                     </div>
                     <div class="card" style="border-left:4px solid #7c3aed; padding:1.5rem;">
-                        <strong style="font-size:.85rem; color:var(--slate-900); display:block; margin-bottom:.3rem;">🔬
-                            Laboratório Independente</strong>
-                        <p style="font-size:.8rem; color:var(--slate-500);">Análises realizadas por laboratório terceiro
-                            credenciado, garantindo total imparcialidade nos resultados.</p>
+                        <strong style="font-size:.85rem; color:var(--slate-900); display:block; margin-bottom:.3rem;">🔬 Laboratório Independente</strong>
+                        <p style="font-size:.8rem; color:var(--slate-500);">Análises realizadas por laboratório terceiro credenciado, garantindo total imparcialidade nos resultados.</p>
                     </div>
                 </div>
             </div>
         </section>
 
         <!-- Processo -->
-        <section class="section">
+        <section class="section" style="background: var(--slate-50);">
             <div class="container">
                 <div class="section-header">
                     <span class="section-tag">Processo Contínuo</span>
-                    <h2 class="section-title">Como garantimos a qualidade em cada entrega</h2>
+                    <h2 class="section-title">Rota da Qualidade que precisa ser explorada</h2>
+                    <p style="color: var(--slate-600); max-width: 800px; margin: 0 auto 3rem auto; font-size: 1.1rem; line-height: 1.6; text-align: center;">Atendemos requisitos legais de âmbito municipal, estadual e federal assim como, somos validados na esfera ambiental, de recursos hídricos mais sanitária. Podemos destacar:</p>
                     <div class="divider"></div>
                 </div>
-                <div class="process-steps">
-                    <div class="process-step">
+                
+                <style>
+                    .rota-grid {
+                        display: grid;
+                        grid-template-columns: 1fr;
+                        gap: 1.5rem;
+                        counter-reset: steps;
+                    }
+                    .rota-step {
+                        background: #fff;
+                        border: 1px solid var(--slate-200);
+                        border-radius: var(--radius);
+                        padding: 2.5rem 2rem;
+                        position: relative;
+                        counter-increment: steps;
+                        display: flex;
+                        flex-direction: column;
+                        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+                        transition: transform 0.2s, box-shadow 0.2s;
+                    }
+                    .rota-step:hover {
+                        transform: translateY(-5px);
+                        box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+                    }
+                    .rota-step .step-num {
+                        width: 54px;
+                        height: 54px;
+                        flex-shrink: 0;
+                        background: var(--brand);
+                        color: #fff;
+                        border-radius: 50%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-weight: 900;
+                        font-size: 1.4rem;
+                        margin-bottom: 1.5rem;
+                    }
+                    .rota-step h3 {
+                        font-size: 1.25rem;
+                        font-weight: 800;
+                        color: var(--slate-900);
+                        margin-bottom: 1rem;
+                    }
+                    .rota-step p {
+                        font-size: 1rem;
+                        color: var(--slate-600);
+                        line-height: 1.7;
+                        margin: 0;
+                        flex: 1;
+                    }
+                    @media (min-width: 900px) {
+                        .rota-grid {
+                            grid-template-columns: 1fr 1fr;
+                        }
+                        .span-2 {
+                            grid-column: 1 / -1;
+                        }
+                    }
+                </style>
+
+                <div class="rota-grid">
+                    <div class="rota-step">
                         <div class="step-num">1</div>
-                        <div class="step-body">
-                            <h3>Captação em Fonte Certificada</h3>
-                            <p>A água é captada exclusivamente de fontes autorizadas pelos órgãos ambientais competentes
-                                do Estado de São Paulo.</p>
-                        </div>
+                        <h3>Alvarás Municipais</h3>
+                        <p>A nível municipal possuímos alvará emitido pela prefeitura, corpo de bombeiros mais polícia civil.</p>
                     </div>
-                    <div class="process-step">
+                    
+                    <div class="rota-step">
                         <div class="step-num">2</div>
-                        <div class="step-body">
-                            <h3>Tratamento e Filtração</h3>
-                            <p>Antes do armazenamento, a água passa por processo de filtração e cloração conforme as
-                                normas sanitárias vigentes.</p>
-                        </div>
+                        <h3>Origem Outorgada (DAEE)</h3>
+                        <p>Todo nosso recurso hídrico tem origem outorgada pelo órgão estadual DAEE (Departamento de Energia do Estado de S.P.). Temos vários pontos de captação espalhados estrategicamente pela cidade para favorecer nossa logística e consequentemente o seu pronto atendimento.</p>
                     </div>
-                    <div class="process-step">
+                    
+                    <div class="rota-step span-2">
                         <div class="step-num">3</div>
-                        <div class="step-body">
-                            <h3>Análise Laboratorial Mensal</h3>
-                            <p>Amostras são enviadas mensalmente ao laboratório independente para análise bacteriológica
-                                e físico-química completa.</p>
-                        </div>
+                        <h3>Rigor e Excelência Sanitária</h3>
+                        <p>Os requisitos sanitários seguem diretriz federal oriundos da Portaria 888/2021 mais estadual via Portaria CVS 01/2020. Estes atendimentos culminam na emissão de alvará sanitário concebido pela vigilância sanitária municipal.<br><br>Nossos reservatórios físicos e móveis são higienizados a cada 6 meses com emissão de laudo assinado por químico responsável. Os laudos de potabilidade da água seguem plano de amostragem anual homologado pela Vigilância Sanitária. Tanto os laudos de potabilidade quanto os de higienização estão a disposição para consulta imediata em nossa home page.</p>
                     </div>
-                    <div class="process-step">
+
+                    <div class="rota-step">
                         <div class="step-num">4</div>
-                        <div class="step-body">
-                            <h3>Higienização dos Caminhões</h3>
-                            <p>Os tanques dos caminhões são higienizados periodicamente com produtos aprovados pela
-                                ANVISA, garantindo água sem contaminação no transporte.</p>
-                        </div>
+                        <h3>Licenciamento Ambiental</h3>
+                        <p>Somos licenciados pelo órgão ambiental CETESB. Temos controle, certificação tanto da água explorada assim como de nossos descartes.</p>
                     </div>
-                    <div class="process-step">
+
+                    <div class="rota-step">
                         <div class="step-num">5</div>
-                        <div class="step-body">
-                            <h3>Rastreabilidade da Entrega</h3>
-                            <p>Cada entrega é documentada com registro de origem, data, volume e responsável. Total
-                                transparência do início ao fim.</p>
-                        </div>
+                        <h3>Frota ABNT e Monitoramento</h3>
+                        <p>Nossa frota é moderna, robusta, própria e conta com tanques alinhados com a Norma ABNT 16882 / 2020 – Transporte Rodoviário de Cargas * Caminhão Pipa. Todos os veículos da Aguajato possuem rastreador para nossa segurança e acompanhamento em tempo real de sua entrega.</p>
                     </div>
-                    <div class="process-step">
+
+                    <div class="rota-step">
                         <div class="step-num">6</div>
-                        <div class="step-body">
-                            <h3>Laudos Públicos e Acessíveis</h3>
-                            <p>Todos os laudos aprovados são disponibilizados online para que qualquer cliente possa
-                                verificar a qualidade da água que recebe.</p>
-                        </div>
+                        <h3>Certificação PSA NBR ISO 14024</h3>
+                        <p>Somos a primeira e única empresa do Brasil a obter certificação PSA – Plano de Segurança da Água – NBR ISO 14024. Isso significa que todo nosso processo é auditado e rastreado por empresa independente. O resultado é qualidade e segurança pro usuário da Aguajato.</p>
+                    </div>
+
+                    <div class="rota-step">
+                        <div class="step-num">7</div>
+                        <h3>Viabilidade Legal e Assessoria</h3>
+                        <p>A água proveniente de fonte alternativa / caminhão pipa é uma possibilidade viável e legalmente amparada. Entretanto, para estrutura-la legalmente e não deixar margem para nenhuma desconformidade, se faz necessário um estruturado aparato de conteúdo tributário e de certificação pública. A Aguajato conta com material altamente qualificado para assessorar nosso usuário diante de qualquer demanda no sentido de assegurar a legalidade e qualidade de nossa operação.</p>
                     </div>
                 </div>
             </div>
