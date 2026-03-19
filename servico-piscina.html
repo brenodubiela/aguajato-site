@@ -423,24 +423,6 @@
                             </div>
                         </div>
 
-                        <!-- Campos Oval -->
-                        <div id="fields-oval" class="calc-fields" style="display:none;">
-                            <div class="fields-row">
-                                <div class="calc-field">
-                                    <label>Comprimento máx. (m)</label>
-                                    <input type="number" id="o-comp" placeholder="9.0" step="0.1" min="0.5">
-                                </div>
-                                <div class="calc-field">
-                                    <label>Largura máx. (m)</label>
-                                    <input type="number" id="o-larg" placeholder="5.0" step="0.1" min="0.5">
-                                </div>
-                            </div>
-                            <div class="calc-field">
-                                <label>Profundidade média (m)</label>
-                                <input type="number" id="o-prof" placeholder="1.5" step="0.1" min="0.3">
-                            </div>
-                        </div>
-
                         <!-- Campos Circular -->
                         <div id="fields-circular" class="calc-fields" style="display:none;">
                             <div class="calc-field">
@@ -451,21 +433,6 @@
                                 <label>Profundidade média (m)</label>
                                 <input type="number" id="c-prof" placeholder="1.4" step="0.1" min="0.3">
                             </div>
-                        </div>
-
-                        <!-- Campos Livre -->
-                        <div id="fields-irregular" class="calc-fields" style="display:none;">
-                            <div class="calc-field">
-                                <label>Área da superfície (m²) — aprox.</label>
-                                <input type="number" id="i-area" placeholder="20" step="0.5" min="1">
-                            </div>
-                            <div class="calc-field">
-                                <label>Profundidade média (m)</label>
-                                <input type="number" id="i-prof" placeholder="1.5" step="0.1" min="0.3">
-                            </div>
-                            <p style="font-size:.75rem; color:rgba(255,255,255,.45); line-height:1.5;">💡 Para formatos
-                                irregulares: meça o comprimento e largura máximos, calcule a área do retângulo
-                                envolvente e multiplique por 0,75.</p>
                         </div>
 
                         <!-- Nível de enchimento -->
@@ -510,7 +477,7 @@
                                 <div class="result-volume-unit">litros necessários</div>
                             </div>
 
-                            <div class="result-grid" style="grid-template-columns: 1fr 1fr 1fr;">
+                            <div class="result-grid" style="grid-template-columns: 1fr 1fr;">
                                 <div class="result-item">
                                     <div class="val" id="res-m3">—</div>
                                     <div class="lbl">m³ de água</div>
@@ -523,7 +490,7 @@
                                     <div class="val" id="res-viagens-medio">—</div>
                                     <div class="lbl">viagens (15.000L)</div>
                                 </div>
-                                <div class="result-item" style="grid-column: span 3;">
+                                <div class="result-item">
                                     <div class="val" id="res-viagens-grande">—</div>
                                     <div class="lbl">viagens (20.000L)</div>
                                 </div>
