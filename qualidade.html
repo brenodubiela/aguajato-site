@@ -91,19 +91,56 @@
         </section>
 
         <!-- Selo PSA em Destaque -->
-        <section class="section-sm" style="background:#0f172a; color:#fff; padding: 4rem 0;">
-            <div class="container">
-                <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 3rem; justify-content: center; background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0)); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius); padding: 3rem; box-shadow: 0 20px 40px rgba(0,0,0,0.2);">
-                    <img src="img/alteração-selo.webp" alt="Selo Qualidade PSA" style="max-width: 280px; height: auto; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5)); transform: scale(1.05);">
-                    <div style="flex: 1; min-width: 300px;">
-                        <span style="display:inline-block; padding:0.25rem 0.75rem; background:var(--brand); color:#fff; border-radius:2rem; font-size:0.85rem; font-weight:700; margin-bottom:1rem; text-transform:uppercase; letter-spacing:1px;">Certificação Exclusiva</span>
-                        <h2 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem; color: #fff; line-height: 1.2;">Selo de Qualidade PSA</h2>
-                        <p style="font-size: 1.15rem; color: #cbd5e1; line-height: 1.6; margin-bottom: 1rem;">
-                            A Aguajato tem o orgulho de ser a <strong>primeira e única empresa do Brasil</strong> a obter a rigorosa certificação PSA (Plano de Segurança da Água) – NBR ISO 14024.
-                        </p>
-                        <p style="font-size: 1.05rem; color: #94a3b8; line-height: 1.6;">
-                            Isso significa que todo o nosso processo é auditado e rastreado do início ao fim por uma empresa independente, entregando a mais alta excelência e segurança hídrica que você e seu projeto merecem.
-                        </p>
+        <section class="section-sm" style="background:#020617; color:#fff; padding: 5rem 0; overflow: hidden; position: relative;">
+            <!-- Background Decoration -->
+            <div style="position: absolute; top: -10%; right: -5%; width: 400px; height: 400px; background: radial-gradient(circle, rgba(14, 165, 233, 0.15) 0%, rgba(14, 165, 233, 0) 70%); border-radius: 50%; z-index: 0; pointer-events: none;"></div>
+            
+            <div class="container" style="position: relative; z-index: 1;">
+                <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 4rem; justify-content: center; background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 2rem; padding: 4rem; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);">
+                    <div style="flex: 0 0 auto; display: flex; flex-direction: column; align-items: center; gap: 1.5rem;">
+                        <div style="position: relative;">
+                            <div style="position: absolute; inset: -20px; background: radial-gradient(circle, rgba(14, 165, 233, 0.2) 0%, transparent 70%); border-radius: 50%; filter: blur(20px);"></div>
+                            <img src="img/selo-psa-isopoint.webp" alt="Selo Qualidade PSA Isopoint" style="max-width: 320px; height: auto; position: relative; z-index: 1; filter: drop-shadow(0 15px 30px rgba(0,0,0,0.4)); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);" onmouseover="this.style.transform='scale(1.03) rotate(2deg)'" onmouseout="this.style.transform='scale(1) rotate(0deg)'">
+                        </div>
+                        <div style="display: flex; gap: 1rem; align-items: center; background: rgba(255,255,255,0.05); padding: 0.5rem 1.25rem; border-radius: 2rem; border: 1px solid rgba(255,255,255,0.1);">
+                            <img src="img/logo-aguajato.webp" alt="Aguajato" style="height: 20px; opacity: 0.8;">
+                            <span style="width: 1px; height: 16px; background: rgba(255,255,255,0.2);"></span>
+                            <span style="font-size: 0.75rem; color: #94a3b8; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Parceria Estratégica</span>
+                        </div>
+                    </div>
+                    
+                    <div style="flex: 1; min-width: 320px;">
+                        <div style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.4rem 1rem; background: linear-gradient(90deg, var(--brand), #0ea5e9); color: #fff; border-radius: 2rem; font-size: 0.75rem; font-weight: 800; margin-bottom: 2rem; text-transform: uppercase; letter-spacing: 0.1em; box-shadow: 0 10px 15px -3px rgba(14, 165, 233, 0.3);">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            Certificação de Excelência
+                        </div>
+                        
+                        <h2 style="font-size: clamp(2rem, 5vw, 3rem); font-weight: 900; margin-bottom: 1.5rem; color: #fff; line-height: 1.1; letter-spacing: -0.02em;">Selo de Qualidade <span style="color: #38bdf8;">PSA</span></h2>
+                        
+                        <div style="display: flex; flex-direction: column; gap: 1.25rem;">
+                            <p style="font-size: 1.25rem; color: #f1f5f9; line-height: 1.6; font-weight: 500;">
+                                A Aguajato é a <strong style="color: #38bdf8; text-decoration: underline; text-underline-offset: 4px;">primeira e única empresa do Brasil</strong> a obter a rigorosa certificação PSA (Plano de Segurança da Água) – NBR ISO 14024 pela Isopoint.
+                            </p>
+                            
+                            <p style="font-size: 1.1rem; color: #94a3b8; line-height: 1.7;">
+                                Esta certificação atesta que todo o nosso processo — da captação à entrega — é auditado e rastreado por órgãos independentes, garantindo a máxima segurança hídrica e conformidade técnica internacional.
+                            </p>
+                            
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;">
+                                <div style="display: flex; align-items: center; gap: 0.75rem; color: #cbd5e1; font-size: 0.95rem;">
+                                    <div style="width: 32px; height: 32px; background: rgba(56, 189, 248, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(56, 189, 248, 0.2);">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                                    </div>
+                                    <span>Segurança Auditada</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 0.75rem; color: #cbd5e1; font-size: 0.95rem;">
+                                    <div style="width: 32px; height: 32px; background: rgba(56, 189, 248, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(56, 189, 248, 0.2);">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                                    </div>
+                                    <span>ISO 14024 Compliant</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
