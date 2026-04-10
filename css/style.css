@@ -817,7 +817,71 @@ main {
   color: #94a3b8;
 }
 
-/* ── TRUST BAR ── */
+/* ── SERVICE CAROUSEL ── */
+.service-carousel-container {
+  position: relative;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  aspect-ratio: 4/3;
+}
+
+.service-carousel-slides {
+  display: flex;
+  height: 100%;
+  will-change: transform;
+}
+
+.service-carousel-slides img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.service-carousel-prev,
+.service-carousel-next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.2s ease;
+  z-index: 10;
+  color: var(--slate-900);
+  opacity: 0;
+  visibility: hidden;
+}
+
+.service-carousel-container:hover .service-carousel-prev,
+.service-carousel-container:hover .service-carousel-next {
+  opacity: 1;
+  visibility: visible;
+}
+
+.service-carousel-prev:hover,
+.service-carousel-next:hover {
+  background: #fff;
+  color: var(--brand);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.service-carousel-prev {
+  left: 1rem;
+}
+
+.service-carousel-next {
+  right: 1rem;
+}
+
 .trust-bar {
   background: #fff;
   border-bottom: 1px solid var(--slate-200);
@@ -1419,7 +1483,7 @@ textarea.form-control {
 }
 /* ── CAROUSEL ── */
 .carousel-wrapper { overflow: hidden; width: 100%; position: relative; padding: 2rem 0; }
-.carousel-track { display: flex; gap: 1rem; width: max-content; animation: scroll-left 45s linear infinite; }
+.carousel-track { display: flex; gap: 1rem; width: max-content; animation: scroll-left 65s linear infinite; }
 .carousel-track:hover { animation-play-state: paused; }
 .carousel-card { flex-shrink: 0; width: 300px; height: 220px; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
 .carousel-card img { width: 100%; height: 100%; object-fit: cover; }

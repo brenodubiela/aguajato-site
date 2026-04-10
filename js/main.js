@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initMobileMenu();
     initScrollTop();
     initScrollHeader();
+    initServiceCarousel();
   });
 });
 
@@ -120,3 +121,84 @@ window.toggleMenu = function () {
   const overlay = document.getElementById('mobile-menu');
   if (overlay) overlay.classList.toggle('is-open');
 };
+
+/* ── Carrossel de Serviços / Hero ── */
+function initServiceCarousel() {
+  const containers = document.querySelectorAll('.service-carousel-container');
+
+  containers.forEach(container => {
+    const slidesTrack = container.querySelector('.service-carousel-slides');
+    const prevBtn = container.querySelector('.service-carousel-prev');
+    const nextBtn = container.querySelector('.service-carousel-next');
+    if (!slidesTrack || !prevBtn || !nextBtn) return;
+
+    const totalSlides = slidesTrack.children.length - 1;
+    let currentIndex = 0;
+    let autoSlideInterval;
+    let isTransitioning = false;
+
+    const updateCarousel = (instant = false) => {
+      if (instant) {
+        slidesTrack.style.transition = 'none';
+      } else {
+        slidesTrack.style.transition = 'transform 0.8s ease-in-out';
+      }
+      slidesTrack.style.transform = `translateX(-${currentIndex * 100}%)`;
+      if (instant) slidesTrack.offsetHeight; // force reflow
+    };
+
+    const nextSlide = () => {
+      if (isTransitioning) return;
+      isTransitioning = true;
+      currentIndex++;
+      updateCarousel();
+
+      if (currentIndex === totalSlides) {
+        setTimeout(() => {
+          currentIndex = 0;
+          updateCarousel(true);
+          isTransitioning = false;
+        }, 800);
+      } else {
+        setTimeout(() => isTransitioning = false, 800);
+      }
+    };
+
+    const prevSlide = () => {
+      if (isTransitioning) return;
+      isTransitioning = true;
+
+      if (currentIndex === 0) {
+        currentIndex = totalSlides;
+        updateCarousel(true);
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            currentIndex = totalSlides - 1;
+            updateCarousel();
+            setTimeout(() => isTransitioning = false, 800);
+          });
+        });
+      } else {
+        currentIndex--;
+        updateCarousel();
+        setTimeout(() => isTransitioning = false, 800);
+      }
+    };
+
+    const startAutoSlide = () => {
+      autoSlideInterval = setInterval(nextSlide, 4000);
+    };
+
+    const stopAutoSlide = () => {
+      clearInterval(autoSlideInterval);
+    };
+
+    container.addEventListener('mouseenter', stopAutoSlide);
+    container.addEventListener('mouseleave', startAutoSlide);
+    nextBtn.addEventListener('click', nextSlide);
+    prevBtn.addEventListener('click', prevSlide);
+
+    startAutoSlide();
+  });
+}
+
