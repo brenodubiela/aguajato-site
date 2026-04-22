@@ -132,10 +132,27 @@ function initServiceCarousel() {
     const nextBtn = container.querySelector('.service-carousel-next');
     if (!slidesTrack || !prevBtn || !nextBtn) return;
 
-    const totalSlides = slidesTrack.children.length - 1;
+    const totalSlides = slidesTrack.children.length;
     let currentIndex = 0;
     let autoSlideInterval;
     let isTransitioning = false;
+
+    const toggleButtons = () => {
+      // Esconde o botão "Voltar" no primeiro slide
+      if (currentIndex === 0) {
+        prevBtn.classList.add('service-carousel-btn-hidden');
+      } else {
+        prevBtn.classList.remove('service-carousel-btn-hidden');
+      }
+
+      // Esconde o botão "Avançar" no último slide
+      if (currentIndex === totalSlides - 1) {
+        nextBtn.classList.add('service-carousel-btn-hidden');
+        stopAutoSlide(); // Para o auto-slide permanentemente ao chegar ao fim
+      } else {
+        nextBtn.classList.remove('service-carousel-btn-hidden');
+      }
+    };
 
     const updateCarousel = (instant = false) => {
       if (instant) {
@@ -145,59 +162,52 @@ function initServiceCarousel() {
       }
       slidesTrack.style.transform = `translateX(-${currentIndex * 100}%)`;
       if (instant) slidesTrack.offsetHeight; // force reflow
+      toggleButtons();
     };
 
     const nextSlide = () => {
-      if (isTransitioning) return;
+      if (isTransitioning || currentIndex >= totalSlides - 1) return;
       isTransitioning = true;
       currentIndex++;
       updateCarousel();
-
-      if (currentIndex === totalSlides) {
-        setTimeout(() => {
-          currentIndex = 0;
-          updateCarousel(true);
-          isTransitioning = false;
-        }, 800);
-      } else {
-        setTimeout(() => isTransitioning = false, 800);
-      }
+      setTimeout(() => isTransitioning = false, 800);
     };
 
     const prevSlide = () => {
-      if (isTransitioning) return;
+      if (isTransitioning || currentIndex <= 0) return;
       isTransitioning = true;
-
-      if (currentIndex === 0) {
-        currentIndex = totalSlides;
-        updateCarousel(true);
-        requestAnimationFrame(() => {
-          requestAnimationFrame(() => {
-            currentIndex = totalSlides - 1;
-            updateCarousel();
-            setTimeout(() => isTransitioning = false, 800);
-          });
-        });
-      } else {
-        currentIndex--;
-        updateCarousel();
-        setTimeout(() => isTransitioning = false, 800);
-      }
+      currentIndex--;
+      updateCarousel();
+      setTimeout(() => isTransitioning = false, 800);
     };
 
     const startAutoSlide = () => {
-      autoSlideInterval = setInterval(nextSlide, 4000);
+      if (currentIndex < totalSlides - 1) {
+        autoSlideInterval = setInterval(nextSlide, 4000);
+      }
     };
 
     const stopAutoSlide = () => {
       clearInterval(autoSlideInterval);
     };
 
+    // Hover pausa o auto-slide apenas se não estiver no último slide
     container.addEventListener('mouseenter', stopAutoSlide);
-    container.addEventListener('mouseleave', startAutoSlide);
-    nextBtn.addEventListener('click', nextSlide);
-    prevBtn.addEventListener('click', prevSlide);
+    container.addEventListener('mouseleave', () => {
+      if (currentIndex < totalSlides - 1) startAutoSlide();
+    });
 
+    nextBtn.addEventListener('click', () => {
+      stopAutoSlide(); // Para auto-slide no clique manual
+      nextSlide();
+    });
+    prevBtn.addEventListener('click', () => {
+      stopAutoSlide(); // Para auto-slide no clique manual
+      prevSlide();
+    });
+
+    // Estado inicial
+    updateCarousel(true);
     startAutoSlide();
   });
 }

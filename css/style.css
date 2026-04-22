@@ -882,6 +882,12 @@ main {
   right: 1rem;
 }
 
+.service-carousel-btn-hidden {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
 .trust-bar {
   background: #fff;
   border-bottom: 1px solid var(--slate-200);
