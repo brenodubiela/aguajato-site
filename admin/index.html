@@ -233,7 +233,7 @@
 
         // Se já houver sessão ativa, redireciona direto pro dashboard
         sb.auth.getSession().then(({ data }) => {
-            if (data.session) window.location.href = 'dashboard.html';
+            if (data.session) window.location.href = '/admin/dashboard.html';
         });
 
         const form = document.getElementById('login-form');
@@ -262,7 +262,7 @@
                 submitBtn.textContent = originalText;
                 return;
             }
-            window.location.href = 'dashboard.html';
+            window.location.href = '/admin/dashboard.html';
         });
     </script>
 </body>

@@ -687,7 +687,7 @@
         // Verifica sessão antes de qualquer coisa
         sb.auth.getSession().then(({ data }) => {
             if (!data.session) {
-                window.location.href = 'index.html';
+                window.location.href = '/admin/index.html';
                 return;
             }
             currentUserEmail = data.session.user.email || 'admin';
@@ -862,7 +862,7 @@
 
         async function logout() {
             await sb.auth.signOut();
-            window.location.href = 'index.html';
+            window.location.href = '/admin/index.html';
         }
 
         document.getElementById('modal-overlay').addEventListener('click', e => {
