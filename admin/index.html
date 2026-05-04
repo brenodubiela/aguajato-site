@@ -8,6 +8,8 @@
     <link rel="icon" type="image/png" href="../img/logo-aguajato.webp">
 
     <meta name="robots" content="noindex, nofollow">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase-config.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
 
@@ -201,8 +203,8 @@
 
         <form id="login-form">
             <div class="form-group">
-                <label for="user">Usuário</label>
-                <input type="text" id="user" name="user" placeholder="admin" autocomplete="username" required>
+                <label for="user">E-mail</label>
+                <input type="email" id="user" name="user" placeholder="admin@aguajato.com.br" autocomplete="username" required>
             </div>
             <div class="form-group">
                 <label for="pass">Senha</label>
@@ -224,27 +226,43 @@
     </div>
 
     <script>
-        // Credenciais (altere aqui para maior segurança)
-        const CREDENTIALS = { user: 'aguajato', pass: 'agua@2025' };
+        const sb = window.supabase.createClient(
+            window.AGUAJATO_SUPABASE.url,
+            window.AGUAJATO_SUPABASE.anonKey
+        );
 
-        // Redireciona se já logado
-        if (sessionStorage.getItem('admin_logged') === 'true') {
-            window.location.href = '/admin/dashboard.html';
-        }
+        // Se já houver sessão ativa, redireciona direto pro dashboard
+        sb.auth.getSession().then(({ data }) => {
+            if (data.session) window.location.href = 'dashboard.html';
+        });
 
-        document.getElementById('login-form').addEventListener('submit', function (e) {
+        const form = document.getElementById('login-form');
+        const err = document.getElementById('error-msg');
+        const submitBtn = form.querySelector('button[type="submit"]');
+
+        form.addEventListener('submit', async function (e) {
             e.preventDefault();
-            const u = document.getElementById('user').value.trim();
-            const p = document.getElementById('pass').value;
-            const err = document.getElementById('error-msg');
-            if (u === CREDENTIALS.user && p === CREDENTIALS.pass) {
-                sessionStorage.setItem('admin_logged', 'true');
-                window.location.href = '/admin/dashboard.html';
-            } else {
+            const email = document.getElementById('user').value.trim();
+            const password = document.getElementById('pass').value;
+            err.style.display = 'none';
+            submitBtn.disabled = true;
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'Entrando...';
+
+            const { error } = await sb.auth.signInWithPassword({ email, password });
+
+            if (error) {
+                err.textContent = error.message === 'Invalid login credentials'
+                    ? 'E-mail ou senha incorretos.'
+                    : 'Erro: ' + error.message;
                 err.style.display = 'block';
                 document.getElementById('pass').value = '';
                 document.getElementById('pass').focus();
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+                return;
             }
+            window.location.href = 'dashboard.html';
         });
     </script>
 </body>

@@ -8,6 +8,8 @@
     <link rel="icon" type="image/png" href="../img/logo-aguajato.webp">
 
     <meta name="robots" content="noindex, nofollow">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase-config.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap');
 
@@ -570,8 +572,8 @@
             <!-- Info -->
             <div class="info-box">
                 <strong>📌 Como funciona o gerenciamento de laudos?</strong>
-                Use este painel para registrar os laudos. Depois, envie o arquivo PDF para a pasta <code>laudos/</code>
-                no servidor via FTP com o nome exato informado no cadastro. O site exibirá automaticamente.
+                Preencha os dados, selecione o arquivo PDF e clique em "Salvar Laudo". O upload é feito direto na nuvem
+                e o laudo aparece automaticamente em <a href="../laudos.html" target="_blank" rel="noopener" style="color:var(--brand);font-weight:600;">/laudos</a>.
             </div>
 
             <!-- Stats -->
@@ -603,7 +605,6 @@
                     <table>
                         <thead>
                             <tr>
-                                <th>#</th>
                                 <th>Título</th>
                                 <th>Período</th>
                                 <th>Tipo</th>
@@ -614,7 +615,7 @@
                         </thead>
                         <tbody id="laudos-tbody">
                             <tr>
-                                <td colspan="7" class="empty">
+                                <td colspan="6" class="empty">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
                                         stroke="currentColor" stroke-width="1.5">
                                         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
@@ -656,10 +657,9 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="form-label" for="m-arquivo">Nome do arquivo PDF</label>
-                <input type="text" id="m-arquivo" class="form-control" placeholder="laudo-bacteriologico-mar-2025.pdf">
-                <small style="font-size:.75rem; color:var(--slate-500); margin-top:.3rem; display:block;">Envie o PDF
-                    com exatamente este nome para a pasta <code>laudos/</code> via FTP.</small>
+                <label class="form-label" for="m-arquivo">Arquivo PDF</label>
+                <input type="file" id="m-arquivo" class="form-control" accept="application/pdf,.pdf">
+                <small id="m-arquivo-hint" style="font-size:.75rem; color:var(--slate-500); margin-top:.3rem; display:block;">Selecione o PDF do laudo (até 25 MB).</small>
             </div>
             <div class="form-group">
                 <label class="form-label" for="m-resultado">Resultado</label>
@@ -667,79 +667,81 @@
             </div>
             <div class="modal-actions">
                 <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
-                <button class="btn btn-primary" onclick="salvarLaudo()">Salvar Laudo</button>
+                <button class="btn btn-primary" id="btn-salvar" onclick="salvarLaudo()">Salvar Laudo</button>
             </div>
         </div>
     </div>
 
     <script>
-        // Verificação de sessão
-        if (sessionStorage.getItem('admin_logged') !== 'true') {
-            window.location.href = '/admin/index.html';
-        }
+        const sb = window.supabase.createClient(
+            window.AGUAJATO_SUPABASE.url,
+            window.AGUAJATO_SUPABASE.anonKey
+        );
+        const TABLE = window.AGUAJATO_SUPABASE.table;
+        const BUCKET = window.AGUAJATO_SUPABASE.bucket;
 
-        // Data atual
-        document.getElementById('current-date').textContent = new Date().toLocaleDateString('pt-BR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-
-        // Chave do localStorage
-        const STORAGE_KEY = 'aguajato_laudos';
         let laudos = [];
         let editingId = null;
+        let currentUserEmail = '';
 
-        // Carrega laudos salvos (localStorage como fallback ao JSON)
-        function loadLaudos() {
-            const stored = localStorage.getItem(STORAGE_KEY);
-            if (stored) {
-                laudos = JSON.parse(stored);
-                renderTable();
-            } else {
-                // Tenta carregar o JSON do servidor como base inicial
-                fetch('../laudos/laudos.json')
-                    .then(r => r.json())
-                    .then(data => { laudos = data; saveLaudos(); renderTable(); })
-                    .catch(() => { laudos = []; renderTable(); });
+        // Verifica sessão antes de qualquer coisa
+        sb.auth.getSession().then(({ data }) => {
+            if (!data.session) {
+                window.location.href = 'index.html';
+                return;
             }
-        }
+            currentUserEmail = data.session.user.email || 'admin';
+            document.querySelector('.sidebar-username').textContent = currentUserEmail;
+            document.querySelector('.sidebar-avatar').textContent = currentUserEmail[0].toUpperCase();
+            document.getElementById('current-date').textContent = new Date().toLocaleDateString('pt-BR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            loadLaudos();
+        });
 
-        function saveLaudos() {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(laudos));
-            exportJSON(); // Gera botão de download do JSON atualizado
-        }
-
-        function exportJSON() {
-            // Cria o JSON para download (cliente cola no servidor via FTP)
+        async function loadLaudos() {
+            const tbody = document.getElementById('laudos-tbody');
+            const { data, error } = await sb.from(TABLE).select('*').order('created_at', { ascending: false });
+            if (error) {
+                tbody.innerHTML = `<tr><td colspan="6" class="empty" style="color:var(--red);">Erro ao carregar laudos: ${error.message}</td></tr>`;
+                return;
+            }
+            laudos = data || [];
+            renderTable();
         }
 
         function renderTable() {
             const tbody = document.getElementById('laudos-tbody');
             document.getElementById('stat-total').textContent = laudos.length;
             document.getElementById('table-count').textContent = laudos.length + ' laudo(s)';
-            if (laudos.length) {
-                document.getElementById('stat-last').textContent = laudos[laudos.length - 1].periodo;
-            }
+            document.getElementById('stat-last').textContent = laudos.length ? laudos[0].periodo : '—';
+
             if (!laudos.length) {
-                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:3rem; color:#94a3b8;">
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:3rem; color:#94a3b8;">
           <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin:0 auto 1rem;display:block;color:#cbd5e1;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
           Nenhum laudo cadastrado. Clique em "Novo Laudo" para começar.
         </td></tr>`;
                 return;
             }
-            tbody.innerHTML = laudos.map((l, i) => `
+            tbody.innerHTML = laudos.map(l => `
         <tr>
-          <td style="color:#94a3b8; font-size:.8rem;">${l.id}</td>
-          <td style="font-weight:600;">${l.titulo}</td>
-          <td>${l.periodo}</td>
-          <td><span class="badge badge-brand">${l.tipo}</span></td>
-          <td style="font-family:monospace; font-size:.8rem; color:#0284c7;">${l.arquivo}</td>
-          <td><span class="badge badge-green">${l.resultado}</span></td>
+          <td style="font-weight:600;">${escapeHtml(l.titulo)}</td>
+          <td>${escapeHtml(l.periodo)}</td>
+          <td><span class="badge badge-brand">${escapeHtml(l.tipo)}</span></td>
+          <td style="font-family:monospace; font-size:.8rem;">
+            <a href="${l.arquivo_url}" target="_blank" rel="noopener" style="color:#0284c7;">Ver PDF ↗</a>
+          </td>
+          <td><span class="badge badge-green">${escapeHtml(l.resultado)}</span></td>
           <td>
             <div style="display:flex; gap:.4rem;">
-              <button class="btn btn-ghost btn-sm" onclick="editLaudo(${i})">Editar</button>
-              <button class="btn btn-danger btn-sm" onclick="deleteLaudo(${i})">Excluir</button>
+              <button class="btn btn-ghost btn-sm" onclick="editLaudo('${l.id}')">Editar</button>
+              <button class="btn btn-danger btn-sm" onclick="deleteLaudo('${l.id}')">Excluir</button>
             </div>
           </td>
         </tr>
       `).join('');
+        }
+
+        function escapeHtml(s) {
+            return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
         }
 
         function openModal(editing = false) {
@@ -750,6 +752,8 @@
                 document.getElementById('m-periodo').value = '';
                 document.getElementById('m-tipo').value = 'Bacteriológica';
                 document.getElementById('m-arquivo').value = '';
+                document.getElementById('m-arquivo').required = true;
+                document.getElementById('m-arquivo-hint').textContent = 'Selecione o PDF do laudo (até 25 MB).';
                 document.getElementById('m-resultado').value = '✔ Aprovado';
             }
             document.getElementById('modal-overlay').classList.add('is-open');
@@ -761,74 +765,109 @@
             editingId = null;
         }
 
-        function editLaudo(idx) {
-            const l = laudos[idx];
-            editingId = idx;
+        function editLaudo(id) {
+            const l = laudos.find(x => x.id === id);
+            if (!l) return;
+            editingId = id;
             document.getElementById('modal-title').textContent = 'Editar Laudo';
             document.getElementById('m-titulo').value = l.titulo;
             document.getElementById('m-periodo').value = l.periodo;
             document.getElementById('m-tipo').value = l.tipo;
-            document.getElementById('m-arquivo').value = l.arquivo;
+            document.getElementById('m-arquivo').value = '';
+            document.getElementById('m-arquivo').required = false;
+            document.getElementById('m-arquivo-hint').textContent = 'Deixe em branco para manter o PDF atual, ou selecione um novo para substituir.';
             document.getElementById('m-resultado').value = l.resultado;
             openModal(true);
         }
 
-        function salvarLaudo() {
+        function slugify(s) {
+            return String(s).normalize('NFD').replace(/[̀-ͯ]/g, '')
+                .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60);
+        }
+
+        async function salvarLaudo() {
+            const btn = document.getElementById('btn-salvar');
             const titulo = document.getElementById('m-titulo').value.trim();
             const periodo = document.getElementById('m-periodo').value.trim();
             const tipo = document.getElementById('m-tipo').value;
-            const arquivo = document.getElementById('m-arquivo').value.trim();
-            const resultado = document.getElementById('m-resultado').value.trim();
-            if (!titulo || !periodo || !arquivo) { alert('Preencha todos os campos obrigatórios.'); return; }
-            const novoLaudo = { id: editingId !== null ? laudos[editingId].id : Date.now(), titulo, periodo, tipo, resultado, arquivo };
-            if (editingId !== null) {
-                laudos[editingId] = novoLaudo;
-            } else {
-                laudos.push(novoLaudo);
+            const fileInput = document.getElementById('m-arquivo');
+            const file = fileInput.files[0];
+            const resultado = document.getElementById('m-resultado').value.trim() || '✔ Aprovado';
+            const isEdit = editingId !== null;
+
+            if (!titulo || !periodo) { alert('Preencha título e período.'); return; }
+            if (!isEdit && !file) { alert('Selecione o arquivo PDF.'); return; }
+            if (file && file.type !== 'application/pdf') { alert('O arquivo precisa ser um PDF.'); return; }
+            if (file && file.size > 25 * 1024 * 1024) { alert('Arquivo muito grande (máx. 25 MB).'); return; }
+
+            btn.disabled = true;
+            const originalText = btn.textContent;
+            btn.textContent = file ? 'Enviando PDF...' : 'Salvando...';
+
+            try {
+                let arquivo_url, arquivo_path;
+
+                if (file) {
+                    const path = `${Date.now()}-${slugify(titulo)}.pdf`;
+                    const { error: upErr } = await sb.storage.from(BUCKET).upload(path, file, {
+                        contentType: 'application/pdf',
+                        upsert: false
+                    });
+                    if (upErr) throw upErr;
+                    arquivo_path = path;
+                    arquivo_url = sb.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;
+                }
+
+                btn.textContent = 'Salvando...';
+
+                if (isEdit) {
+                    const updateData = { titulo, periodo, tipo, resultado };
+                    if (arquivo_url) {
+                        updateData.arquivo_url = arquivo_url;
+                        updateData.arquivo_path = arquivo_path;
+                        const oldLaudo = laudos.find(x => x.id === editingId);
+                        if (oldLaudo?.arquivo_path) {
+                            await sb.storage.from(BUCKET).remove([oldLaudo.arquivo_path]);
+                        }
+                    }
+                    const { error } = await sb.from(TABLE).update(updateData).eq('id', editingId);
+                    if (error) throw error;
+                } else {
+                    const { error } = await sb.from(TABLE).insert({
+                        titulo, periodo, tipo, resultado, arquivo_url, arquivo_path
+                    });
+                    if (error) throw error;
+                }
+
+                closeModal();
+                await loadLaudos();
+            } catch (e) {
+                alert('Erro ao salvar: ' + (e.message || e));
+            } finally {
+                btn.disabled = false;
+                btn.textContent = originalText;
             }
-            saveLaudos();
-            renderTable();
-            closeModal();
-            // Botão de download do JSON
-            showDownloadJSON();
         }
 
-        function deleteLaudo(idx) {
-            if (!confirm('Remover este laudo da lista?')) return;
-            laudos.splice(idx, 1);
-            saveLaudos();
-            renderTable();
-            showDownloadJSON();
-        }
-
-        function showDownloadJSON() {
-            const data = JSON.stringify(laudos, null, 2);
-            const blob = new Blob([data], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            let btn = document.getElementById('dl-json');
-            if (!btn) {
-                const wrap = document.querySelector('.table-header');
-                btn = document.createElement('a');
-                btn.id = 'dl-json';
-                btn.className = 'btn btn-ghost btn-sm';
-                btn.textContent = '⬇ Baixar laudos.json';
-                wrap.appendChild(btn);
+        async function deleteLaudo(id) {
+            if (!confirm('Remover este laudo? Esta ação não pode ser desfeita.')) return;
+            const l = laudos.find(x => x.id === id);
+            const { error } = await sb.from(TABLE).delete().eq('id', id);
+            if (error) { alert('Erro ao excluir: ' + error.message); return; }
+            if (l?.arquivo_path) {
+                await sb.storage.from(BUCKET).remove([l.arquivo_path]);
             }
-            btn.href = url;
-            btn.download = 'laudos.json';
-            btn.title = 'Baixe e suba este arquivo para laudos/ no servidor via FTP';
+            await loadLaudos();
         }
 
-        function logout() {
-            sessionStorage.removeItem('admin_logged');
-            window.location.href = '/admin/index.html';
+        async function logout() {
+            await sb.auth.signOut();
+            window.location.href = 'index.html';
         }
 
         document.getElementById('modal-overlay').addEventListener('click', e => {
             if (e.target === document.getElementById('modal-overlay')) closeModal();
         });
-
-        loadLaudos();
     </script>
 </body>
 

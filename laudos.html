@@ -12,6 +12,8 @@
     <link rel="stylesheet" href="css/style.css">
     <script src="https://unpkg.com/lucide@latest" defer></script>
     <script src="js/main.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
     <style>
         .laudos-grid {
             display: grid;
@@ -199,22 +201,40 @@
     <div id="footer-placeholder"></div>
 
     <script>
-        // Carrega laudos do JSON
+        const sb = window.supabase.createClient(
+            window.AGUAJATO_SUPABASE.url,
+            window.AGUAJATO_SUPABASE.anonKey
+        );
+
         async function loadLaudos() {
             const container = document.getElementById('laudos-list');
             const counter = document.getElementById('laudo-count');
-            try {
-                const res = await fetch('laudos/laudos.json');
-                const laudos = await res.json();
-                counter.textContent = laudos.length + ' laudo' + (laudos.length !== 1 ? 's' : '') + ' disponível';
-                if (!laudos.length) {
-                    container.innerHTML = `<div class="empty-state">
+            const { data: laudos, error } = await sb
+                .from(window.AGUAJATO_SUPABASE.table)
+                .select('*')
+                .order('created_at', { ascending: false });
+
+            if (error) {
+                counter.textContent = 'Erro ao carregar';
+                counter.style.background = 'var(--red-light)';
+                counter.style.color = 'var(--red)';
+                container.innerHTML = `<div class="empty-state">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+          <p>Não foi possível carregar os laudos. Tente novamente.</p>
+        </div>`;
+                return;
+            }
+
+            counter.textContent = laudos.length + ' laudo' + (laudos.length !== 1 ? 's' : '') + ' disponível';
+            if (!laudos.length) {
+                container.innerHTML = `<div class="empty-state">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
             <p>Nenhum laudo publicado ainda.</p>
           </div>`;
-                    return;
-                }
-                container.innerHTML = laudos.map(l => `
+                return;
+            }
+
+            container.innerHTML = laudos.map(l => `
           <div class="laudo-card">
             <div class="laudo-icon" style="background:var(--brand-light);color:var(--brand);">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
@@ -224,22 +244,13 @@
               <div class="laudo-meta">📅 ${l.periodo} · ${l.tipo} · <span style="color:var(--green);font-weight:600;">${l.resultado}</span></div>
             </div>
             <div class="laudo-actions">
-              <a href="laudos/${l.arquivo}" target="_blank" rel="noopener" class="btn btn-primary btn-sm">
+              <a href="${l.arquivo_url}" target="_blank" rel="noopener" class="btn btn-primary btn-sm">
                 <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
                 Baixar
               </a>
             </div>
           </div>
         `).join('');
-            } catch {
-                counter.textContent = 'Erro ao carregar';
-                counter.style.background = 'var(--red-light)';
-                counter.style.color = 'var(--red)';
-                container.innerHTML = `<div class="empty-state">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
-          <p>Não foi possível carregar os laudos. Tente novamente.</p>
-        </div>`;
-            }
         }
         document.addEventListener('DOMContentLoaded', loadLaudos);
     </script>
